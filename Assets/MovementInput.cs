@@ -69,32 +69,36 @@ public class MovementInput : MonoBehaviour
         }
 
         if (Input.GetMouseButton(0))
-        {
-            SlicedHull hull = Sphere.Slice(PlaneCut.transform.position, PlaneCut.transform.up);
-            if (hull != null)
+        { 
+            Collider[] hits = Physics.OverlapBox(PlaneCut.transform.position, new Vector3(10, 0.1f, 10), PlaneCut.transform.rotation);
+
+            foreach (var item in hits)
             {
-                GameObject bootom = hull.CreateLowerHull(Sphere, null);
-                GameObject top = hull.CreateUpperHull(Sphere, null);
-                Destroy(Sphere);
+                SlicedHull hull = item.gameObject.Slice(PlaneCut.transform.position, PlaneCut.transform.up);
+                if (hull != null)
+                {
+                    GameObject bootom = hull.CreateLowerHull(item.gameObject, null);
+                    GameObject top = hull.CreateUpperHull(item.gameObject, null);
+                    CreatePieceComponent(bootom);
+                    CreatePieceComponent(top);
+                    Destroy(Sphere);
+                }
             }
         }
+    /*
 
-
-        Collider[] hits = Physics.OverlapBox(PlaneCut.transform.position, new Vector3(10, 0.1f, 10), PlaneCut.transform.rotation);
-
-        foreach (var item in hits)
+    {
+        SlicedHull hull = Sphere.Slice(PlaneCut.transform.position, PlaneCut.transform.up);
+        if (hull != null)
         {
-            SlicedHull hull = item.gameObject.Slice(PlaneCut.transform.position, PlaneCut.transform.up);
-            if (hull != null)
-            {
-                GameObject bootom = hull.CreateLowerHull(item.gameObject, null);
-                GameObject top = hull.CreateUpperHull(item.gameObject, null);
-                Destroy(Sphere);
-            }
+            GameObject bootom = hull.CreateLowerHull(Sphere, null);
+            GameObject top = hull.CreateUpperHull(Sphere, null);
+            Destroy(Sphere);
         }
-    }
+    */
+}
 
-    void CreatePieceComponent(GameObject go)
+void CreatePieceComponent(GameObject go)
     {
         go.layer = LayerMask.NameToLayer("destroyable");
         Rigidbody rb = go.AddComponent<Rigidbody>();
