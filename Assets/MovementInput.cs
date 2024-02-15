@@ -53,6 +53,9 @@ public class MovementInput : MonoBehaviour
             Camera.main.DOFieldOfView(40, 0.3f);
         }
 
+
+
+
         if (Input.GetMouseButtonUp(1))
         {
             PlaneCut.SetActive(false);
@@ -63,39 +66,34 @@ public class MovementInput : MonoBehaviour
             Camera.main.DOFieldOfView(60, 0.1f);
         }
 
+
+
+
         if (Input.GetMouseButton(1))
         {
             PlaneCut.transform.eulerAngles += new Vector3(0, 0, -Input.GetAxis("Mouse X") * 5);
         }
 
-        if (Input.GetMouseButton(0))
+
+
+
+        if (Input.GetMouseButtonDown(0))
         { 
-            Collider[] hits = Physics.OverlapBox(PlaneCut.transform.position, new Vector3(10, 0.1f, 10), PlaneCut.transform.rotation);
+            Collider[] hits = Physics.OverlapBox(PlaneCut.transform.position, new Vector3(10, 0.1f, 10), PlaneCut.transform.rotation, LayerCut);
 
             foreach (var item in hits)
             {
                 SlicedHull hull = item.gameObject.Slice(PlaneCut.transform.position, PlaneCut.transform.up);
                 if (hull != null)
                 {
-                    GameObject bootom = hull.CreateLowerHull(item.gameObject, null);
+                    GameObject bottom = hull.CreateLowerHull(item.gameObject, null);
                     GameObject top = hull.CreateUpperHull(item.gameObject, null);
-                    CreatePieceComponent(bootom);
+                    CreatePieceComponent(bottom);
                     CreatePieceComponent(top);
                     Destroy(Sphere);
                 }
             }
         }
-    /*
-
-    {
-        SlicedHull hull = Sphere.Slice(PlaneCut.transform.position, PlaneCut.transform.up);
-        if (hull != null)
-        {
-            GameObject bootom = hull.CreateLowerHull(Sphere, null);
-            GameObject top = hull.CreateUpperHull(Sphere, null);
-            Destroy(Sphere);
-        }
-    */
 }
 
 void CreatePieceComponent(GameObject go)
