@@ -51,10 +51,9 @@ public class MovementInput : MonoBehaviour
 
             Camera.main.DOKill();
             Camera.main.DOFieldOfView(40, 0.3f);
+
+            Animator.SetBool("bladeMode", true);
         }
-
-
-
 
         if (Input.GetMouseButtonUp(1))
         {
@@ -64,18 +63,21 @@ public class MovementInput : MonoBehaviour
 
             Camera.main.DOKill();
             Camera.main.DOFieldOfView(60, 0.1f);
+
+            Animator.SetBool("bladeMode", false);
         }
-
-
-
 
         if (Input.GetMouseButton(1))
         {
             PlaneCut.transform.eulerAngles += new Vector3(0, 0, -Input.GetAxis("Mouse X") * 5);
+
+            float angleZ = PlaneCut.transform.eulerAngles.z;
+            float x = Mathf.Cos(angleZ * Mathf.Deg2Rad);
+            float y = Mathf.Sin(angleZ * Mathf.Deg2Rad);
+
+            DOVirtual.Float(x, -x, 0.02f, UpdateX);
+            DOVirtual.Float(y, -y, 0.02f, UpdateY);
         }
-
-
-
 
         if (Input.GetMouseButtonDown(0))
         { 
@@ -94,7 +96,18 @@ public class MovementInput : MonoBehaviour
                 }
             }
         }
-}
+
+
+        void UpdateX(float x)
+        {
+            Animator.SetFloat("x", x);
+        }
+
+        void UpdateY(float y)
+        {
+            Animator.SetFloat("y", y);
+        }
+    }
 
 void CreatePieceComponent(GameObject go)
     {
